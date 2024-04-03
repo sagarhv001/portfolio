@@ -58,7 +58,7 @@ const PortfolioPage = () => {
                 key={item.id}
               >
                 <div className="flex flex-col gap-8 text-white">
-                  <h1 className="text-md font-bold md:text-4xl lg:text-6xl xl:text-8xl">
+                  <h1 className=" items-center text-center text-md font-bold md:text-3xl lg:text-4xl xl:text-6xl">
                     {item.title}
                   </h1>
                   <div className="relative w-80 h-56 md:w-96 md:h-64 lg:w-[500px] lg:h-[350px] xl:w-[600px] xl:h-[420px]">
@@ -92,8 +92,8 @@ const PortfolioPage = () => {
               />
             </defs>
             <text fill="#000">
-              <textPath xlinkHref="#circlePath" className="text-md">
-                Data Science & AI/ML enthusiast, Frontend Developer, 
+              <textPath xlinkHref="#circlePath" className="text-sm">
+                Data Science & AI/ML enthusiast, Frontend Developer
               </textPath>
             </text>
           </motion.svg>
