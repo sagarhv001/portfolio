@@ -92,8 +92,8 @@ const PortfolioPage = () => {
               />
             </defs>
             <text fill="#000">
-              <textPath xlinkHref="#circlePath" className="text-xl">
-                Front-end Developer and UI Designer
+              <textPath xlinkHref="#circlePath" className="text-md">
+                Data Science & AI/ML enthusiast, Frontend Developer, 
               </textPath>
             </text>
           </motion.svg>

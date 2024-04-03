@@ -271,7 +271,7 @@ const Aboutpage = () => {
                   </div>
                   <div className="p-3 rounded bg-white text-sm font-semibold w-fit">
                     {" "}
-                    {/* Job Company */}Marimallappa`&apos;`s PU College, Mysuru
+                    {/* Job Company */}Marimallappa&apos;s PU College, Mysuru
                   </div>
                 </div>
               </div>

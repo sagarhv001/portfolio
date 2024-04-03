@@ -30,10 +30,10 @@ const Homepage = () => {
               Building Clarity, Unveiling Insight
             </h1>
             <p className="md:text-xl">
-              Dive into my digital space! I`&apos;`m a aspiring Data Scientist and Tech
+              Dive into my digital space! I&apos;m a aspiring Data Scientist and Tech
               Enthusiat, crafting insights from every byte. Join me in a journey
               where challenges spark growth, and data unveils its hidden
-              stories. Let`&apos;`s explore the world of insights together.
+              stories. Let&apos;s explore the world of insights together.
             </p>
           </div>
           <div className="flex gap-4 w-full mt-4 item-align-left">
