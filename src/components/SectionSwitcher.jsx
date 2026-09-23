@@ -19,11 +19,18 @@ const NAV = [
   { id: "contact", label: "Contact", icon: <Svg><rect x="3" y="5" width="18" height="14" rx="2" /><path d="m3.5 7 8.5 6 8.5-6" /></Svg> },
 ];
 
+const SUN = <Svg><circle cx="12" cy="12" r="4" /><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" /></Svg>;
+const MOON = <Svg><path d="M20.5 14.5A8.5 8.5 0 0 1 9.5 3.5a8.5 8.5 0 1 0 11 11Z" /></Svg>;
+
 const BLUR_MS = 500;
 
 export default function SectionSwitcher({ sections }) {
   const [active, setActive] = useState("home");
   const [small, setSmall] = useState(false);
+  // the layout's inline script already applied the theme; this just mirrors it for the icon
+  const [day, setDay] = useState(false);
+
+  useEffect(() => setDay(document.documentElement.dataset.theme === "day"), []);
 
   useEffect(() => {
     const mq = window.matchMedia("(max-width: 640px)");
@@ -51,11 +58,31 @@ export default function SectionSwitcher({ sections }) {
     }, BLUR_MS);
   }
 
-  const items = NAV.map((s) => ({
-    ...s,
-    onClick: () => go(s.id),
-    className: s.id === active ? "is-active" : "",
-  }));
+  function toggleTheme() {
+    const next = day ? "night" : "day";
+    if (next === "day") document.documentElement.dataset.theme = "day";
+    else delete document.documentElement.dataset.theme;
+    try {
+      localStorage.setItem("theme", next);
+    } catch {
+      // storage blocked (private mode): the toggle still works, it just won't be remembered
+    }
+    setDay(!day);
+  }
+
+  const items = [
+    ...NAV.map((s) => ({
+      ...s,
+      onClick: () => go(s.id),
+      className: s.id === active ? "is-active" : "",
+    })),
+    {
+      id: "theme",
+      label: day ? "Night mode" : "Day mode",
+      icon: day ? MOON : SUN,
+      onClick: toggleTheme,
+    },
+  ];
 
   return (
     <>

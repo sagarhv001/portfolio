@@ -3,6 +3,24 @@
 @tailwind utilities;
 
 @layer base {
+  /* theme = two RGB triplets; tailwind's white/black map to them (tailwind.config.js),
+     so every text-white/60, bg-black etc. flips with no per-class changes */
+  :root {
+    --fg: 255 255 255;
+    --bg: 0 0 0;
+    --shadow: 0.45;
+  }
+
+  :root[data-theme="day"] {
+    --fg: 17 17 24;
+    --bg: 244 243 239;
+    --shadow: 0.12;
+  }
+
+  body {
+    transition: background-color 0.4s ease, color 0.4s ease;
+  }
+
   /* the page never scrolls — the dock is the only navigation, sections scroll internally */
   html,
   body {
@@ -38,13 +56,13 @@
   .glass,
   .glass-card {
     position: relative;
-    background: rgba(255, 255, 255, 0.07);
+    background: rgb(var(--fg) / 0.07);
     backdrop-filter: blur(14px) saturate(180%);
     -webkit-backdrop-filter: blur(14px) saturate(180%);
     box-shadow:
       inset 0 1px 0 rgba(255, 255, 255, 0.3),
       inset 0 -6px 12px rgba(255, 255, 255, 0.05),
-      0 6px 20px rgba(0, 0, 0, 0.45);
+      0 6px 20px rgb(0 0 0 / var(--shadow));
     transition: background 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
   }
 
@@ -83,12 +101,12 @@
   button.glass:hover,
   a.glass-card:hover,
   button.glass-card:hover {
-    background: rgba(255, 255, 255, 0.15);
+    background: rgb(var(--fg) / 0.15);
     transform: translateY(-2px);
     box-shadow:
       inset 0 1px 0 rgba(255, 255, 255, 0.45),
       inset 0 -6px 12px rgba(255, 255, 255, 0.08),
-      0 10px 28px rgba(0, 0, 0, 0.5);
+      0 10px 28px rgb(0 0 0 / var(--shadow));
   }
 
   a.glass:active,
