@@ -1,20 +1,20 @@
 {
-  "name": "lama-dev-portfolio-starter",
+  "name": "portfolio",
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "node app.js dev",
     "build": "next build",
-    "start": "next start",
+    "start": "node app.js start",
     "lint": "next lint"
   },
   "dependencies": {
-    "@emailjs/browser": "^4.3.3",
-    "dotenv": "^16.4.5",
-    "framer-motion": "^11.0.8",
+    "motion": "^13.4.1",
     "next": "^14.1.0",
+    "postprocessing": "^6.39.5",
     "react": "18",
-    "react-dom": "18"
+    "react-dom": "18",
+    "three": "^0.180.0"
   },
   "devDependencies": {
     "autoprefixer": "10.0.1",

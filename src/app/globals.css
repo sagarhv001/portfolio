@@ -1,3 +1,121 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  /* the page never scrolls — the dock is the only navigation, sections scroll internally */
+  html,
+  body {
+    height: 100%;
+    overflow: hidden;
+    overscroll-behavior: none;
+  }
+}
+
+@layer components {
+  /* warp transition: the dock fades + blurs this away, swaps the section, brings it back */
+  #content {
+    transition: filter 0.45s ease, opacity 0.45s ease;
+  }
+
+  body[data-warping] #content {
+    filter: blur(24px);
+    opacity: 0;
+  }
+
+  /* hide the scrollbar without losing the scroll */
+  .no-scrollbar {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* ponytail: pure CSS — backdrop-filter + a masked gradient rim is the whole effect, no lib.
+     One recipe, two radii: .glass is a pill (buttons, chips), .glass-card is rounded (cards). */
+  .glass,
+  .glass-card {
+    position: relative;
+    background: rgba(255, 255, 255, 0.07);
+    backdrop-filter: blur(14px) saturate(180%);
+    -webkit-backdrop-filter: blur(14px) saturate(180%);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.3),
+      inset 0 -6px 12px rgba(255, 255, 255, 0.05),
+      0 6px 20px rgba(0, 0, 0, 0.45);
+    transition: background 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
+  }
+
+  .glass {
+    border-radius: 9999px;
+  }
+
+  .glass-card {
+    border-radius: 1rem;
+  }
+
+  /* the bright rim: gradient border via a mask, brightest top-left like a lit edge */
+  .glass::before,
+  .glass-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    padding: 1px;
+    border-radius: inherit;
+    background: linear-gradient(
+      140deg,
+      rgba(255, 255, 255, 0.65),
+      rgba(255, 255, 255, 0.08) 35%,
+      transparent 55%,
+      rgba(255, 255, 255, 0.35)
+    );
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    mask-composite: exclude;
+    pointer-events: none;
+  }
+
+  /* only things you can actually click lift — static chips and entry cards stay put */
+  a.glass:hover,
+  button.glass:hover,
+  a.glass-card:hover,
+  button.glass-card:hover {
+    background: rgba(255, 255, 255, 0.15);
+    transform: translateY(-2px);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.45),
+      inset 0 -6px 12px rgba(255, 255, 255, 0.08),
+      0 10px 28px rgba(0, 0, 0, 0.5);
+  }
+
+  a.glass:active,
+  button.glass:active,
+  a.glass-card:active,
+  button.glass-card:active {
+    transform: translateY(0) scale(0.98);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .glass,
+    .glass-card,
+    a.glass:hover,
+    button.glass:hover,
+    a.glass-card:hover,
+    a.glass:active,
+    button.glass:active,
+    a.glass-card:active {
+      transition: none;
+      transform: none;
+    }
+
+    #content,
+    body[data-warping] #content {
+      transition: none;
+      filter: none;
+      opacity: 1;
+    }
+  }
+}
