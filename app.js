@@ -6,6 +6,9 @@ const config = {
   description: "Portfolio",
 };
 
+// public/ files need the GitHub Pages base path in front — Next only adds it to its own assets
+const asset = (path) => (process.env.NEXT_PUBLIC_BASE_PATH || "") + path;
+
 config.content = {
   name: "Sagar H V",
   headline: "Backend Developer — Python Automation, AI Integrations",
@@ -79,7 +82,7 @@ config.content = {
   projects: [
     {
       title: "Freelance Copilot",
-      image: "/projects/freelance-copilot.jpg",
+      image: asset("/projects/freelance-copilot.jpg"),
       points: [
         "Aggregates freelance opportunities from multiple sources.",
         "Automated job collection pipelines with Playwright and MongoDB.",
@@ -94,7 +97,7 @@ config.content = {
     },
     {
       title: "AI Python Code Generation",
-      image: "/projects/python-codegen.jpg",
+      image: asset("/projects/python-codegen.jpg"),
       points: [
         "Fine-tuned LLaMA 3.1 8B using LoRA for Python code generation.",
         "Evaluation pipelines using BLEU and ROUGE metrics.",
@@ -109,7 +112,7 @@ config.content = {
     },
     {
       title: "Real-Time Friend-or-Foe Detection",
-      image: "/projects/friend-or-foe.jpg",
+      image: asset("/projects/friend-or-foe.jpg"),
       points: [
         "End-to-end computer vision system for real-time classification.",
         "GPS tracking interfaces using ESP32 and Python.",
@@ -124,7 +127,7 @@ config.content = {
     },
     {
       title: "Quant-Qual Stock Movement Prediction",
-      image: "/projects/stock-prediction.jpg",
+      image: asset("/projects/stock-prediction.jpg"),
       points: [
         "Hybrid system combining quantitative models and market sentiment.",
         "Automated pipelines for market data collection and processing.",
@@ -138,7 +141,7 @@ config.content = {
     },
     {
       title: "YouTube Trends Analytics",
-      image: "/projects/youtube-trends.jpg",
+      image: asset("/projects/youtube-trends.jpg"),
       points: [
         "Processed large-scale YouTube datasets for viewer behaviour patterns.",
         "Automated data cleaning workflows and analytical reporting.",
