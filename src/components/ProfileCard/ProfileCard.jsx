@@ -235,8 +235,10 @@ const ProfileCardComponent = ({
     const shell = shellRef.current;
     if (!shell) return;
 
-    const pointerMoveHandler = handlePointerMove;
-    const pointerEnterHandler = handlePointerEnter;
+    // tilt follows a mouse/pen only: a finger on this card means "scroll", and tilting under it fights the scroll
+    const notTouch = fn => e => e.pointerType !== 'touch' && fn(e);
+    const pointerMoveHandler = notTouch(handlePointerMove);
+    const pointerEnterHandler = notTouch(handlePointerEnter);
     const pointerLeaveHandler = handlePointerLeave;
     const deviceOrientationHandler = handleDeviceOrientation;
 

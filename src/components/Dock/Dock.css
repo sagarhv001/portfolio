@@ -112,3 +112,16 @@
   transform: translateX(-50%);
   pointer-events: none;
 }
+
+/* phones: anchored to the bottom edge, label floats above */
+.dock-panel.dock-bottom {
+  top: auto;
+  bottom: calc(0.5rem + env(safe-area-inset-bottom));
+  align-items: flex-end;
+  padding: 0 0.5rem 0.5rem;
+}
+
+.dock-bottom .dock-label {
+  bottom: auto;
+  top: -1.75rem;
+}

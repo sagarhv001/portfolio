@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Dock from "./Dock/Dock";
 
 const S = { fill: "none", stroke: "currentColor", strokeWidth: 1.75, strokeLinecap: "round", strokeLinejoin: "round" };
@@ -33,15 +33,30 @@ export default function SectionSwitcher({ sections }) {
   useEffect(() => setDay(document.documentElement.dataset.theme === "day"), []);
 
   useEffect(() => {
-    const mq = window.matchMedia("(max-width: 640px)");
+    const mq = window.matchMedia("(max-width: 639px)");
     const sync = () => setSmall(mq.matches);
     sync();
     mq.addEventListener("change", sync);
     return () => mq.removeEventListener("change", sync);
   }, []);
 
-  function go(id) {
-    if (id === active) return;
+  // the URL hash is the router: /#contact deep-links, back/forward and href="#work" links all switch sections.
+  // ref so the listener never sees a stale `go`
+  const goRef = useRef();
+  useEffect(() => {
+    // deep link: show it straight away, no warp on first paint
+    const id = location.hash.slice(1);
+    if (sections[id]) setActive(id);
+
+    // back/forward (in-page links are intercepted below, so they never reach the browser's own hash jump)
+    const onPop = () => goRef.current(location.hash.slice(1) || "home", false);
+    window.addEventListener("popstate", onPop);
+    return () => window.removeEventListener("popstate", onPop);
+  }, [sections]);
+
+  function go(id, push = true) {
+    if (id === active || !sections[id]) return;
+    if (push) history.pushState(null, "", id === "home" ? location.pathname : `#${id}`);
 
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
       setActive(id);
@@ -58,6 +73,16 @@ export default function SectionSwitcher({ sections }) {
     }, BLUR_MS);
   }
 
+  goRef.current = go;
+
+  // href="#work" links inside a section go through the dock's path instead of native hash navigation
+  function onContentClick(e) {
+    const a = e.target.closest('a[href^="#"]');
+    if (!a) return;
+    e.preventDefault();
+    go(a.getAttribute("href").slice(1) || "home");
+  }
+
   function toggleTheme() {
     const next = day ? "night" : "day";
     if (next === "day") document.documentElement.dataset.theme = "day";
@@ -70,33 +95,45 @@ export default function SectionSwitcher({ sections }) {
     setDay(!day);
   }
 
-  const items = [
-    ...NAV.map((s) => ({
-      ...s,
-      onClick: () => go(s.id),
-      className: s.id === active ? "is-active" : "",
-    })),
-    {
-      id: "theme",
-      label: day ? "Night mode" : "Day mode",
-      icon: day ? MOON : SUN,
-      onClick: toggleTheme,
-    },
-  ];
+  const items = NAV.map((s) => ({
+    ...s,
+    onClick: () => go(s.id),
+    className: s.id === active ? "is-active" : "",
+  }));
+
+  const size = small ? 36 : 50;
 
   return (
     <>
-      <div className="pointer-events-none fixed inset-x-0 top-0 z-50 flex justify-center">
+      {/* reuses .dock-item styling so it matches the dock without joining it */}
+      <button
+        type="button"
+        onClick={toggleTheme}
+        aria-label={day ? "Night mode" : "Day mode"}
+        title={day ? "Night mode" : "Day mode"}
+        className="dock-item z-50 [&>svg]:h-[45%] [&>svg]:w-[45%]"
+        // inline: .dock-item sets position: relative, which would beat a `fixed` class
+        // top 1rem lines it up with the dock's icons (panel top 0.5rem + padding 0.5rem)
+        style={{ position: "fixed", top: "1rem", left: "0.5rem", width: size, height: size }}
+      >
+        {day ? MOON : SUN}
+      </button>
+
+      {/* phones: dock sits at the bottom where thumbs reach, and no magnify — there is no hover on touch */}
+      <div className={`pointer-events-none fixed inset-x-0 z-50 flex justify-center ${small ? "bottom-0 items-end" : "top-0"}`}>
         <Dock
           items={items}
           baseItemSize={small ? 36 : 50}
-          magnification={small ? 52 : 70}
+          magnification={small ? 36 : 70}
           distance={small ? 120 : 200}
           panelHeight={small ? 52 : 68}
+          className={small ? "dock-bottom" : ""}
         />
       </div>
 
-      <div id="content">{sections[active]}</div>
+      <div id="content" onClick={onContentClick}>
+        {sections[active]}
+      </div>
     </>
   );
 }

@@ -34,7 +34,8 @@
   perspective: 500px;
   transform: translate3d(0, 0, 0.1px);
   position: relative;
-  touch-action: none;
+  /* pan-y, not none: on phones the card fills the screen, and none swallowed every scroll that started on it */
+  touch-action: pan-y;
 }
 
 .pc-behind {
@@ -631,7 +632,31 @@
   transform: translateY(-2px);
 }
 
-/* day mode: a light page shows through the smoky tint as mid-grey and the name washes out */
+/* day mode: frosted light glass with dark ink, same as the rest of the page */
 :root[data-theme="day"] .pc-glass .pc-inside {
-  background-color: rgba(8, 8, 16, 0.72);
+  background-color: rgba(255, 255, 255, 0.18);
+}
+
+:root[data-theme="day"] .pc-glass .pc-shine {
+  opacity: 0.35;
+}
+
+:root[data-theme="day"] .pc-details h3 {
+  background-image: linear-gradient(to bottom, #111118, #4a4ac0);
+}
+
+:root[data-theme="day"] .pc-details p {
+  background-image: linear-gradient(to bottom, #111118, #3a3a9a);
+}
+
+:root[data-theme="day"] .pc-handle,
+:root[data-theme="day"] .pc-status,
+:root[data-theme="day"] .pc-contact-btn {
+  color: rgba(17, 17, 24, 0.85);
+}
+
+:root[data-theme="day"] .pc-glass .pc-user-info,
+:root[data-theme="day"] .pc-glass .pc-contact-btn {
+  background: rgba(255, 255, 255, 0.3);
+  border-color: rgba(17, 17, 24, 0.15);
 }

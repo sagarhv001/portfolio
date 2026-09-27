@@ -13,7 +13,7 @@
 
   :root[data-theme="day"] {
     --fg: 17 17 24;
-    --bg: 244 243 239;
+    --bg: 196 196 192;
     --shadow: 0.12;
   }
 
@@ -116,7 +116,51 @@
     transform: translateY(0) scale(0.98);
   }
 
+  /* card flip: both faces stack in one grid cell, so the card is as tall as its taller face.
+     a hidden checkbox holds the state: tap / click / Space toggles it, tap again flips back.
+     hover only flips on real pointers — on phones :hover sticks after a tap and would never let go. */
+  .flip {
+    perspective: 1200px;
+  }
+
+  .flip-inner {
+    display: grid;
+    height: 100%;
+    transform-style: preserve-3d;
+    transition: transform 0.7s cubic-bezier(0.3, 0.7, 0.2, 1);
+  }
+
+  .flip:has(:checked) .flip-inner {
+    transform: rotateY(180deg);
+  }
+
+  @media (hover: hover) {
+    .flip:hover .flip-inner {
+      transform: rotateY(180deg);
+    }
+  }
+
+  .flip:has(:focus-visible) {
+    outline: 2px solid rgb(var(--fg) / 0.6);
+    outline-offset: 4px;
+    border-radius: 1rem;
+  }
+
+  .flip-face {
+    grid-area: 1 / 1;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+  }
+
+  .flip-back {
+    transform: rotateY(180deg);
+  }
+
   @media (prefers-reduced-motion: reduce) {
+    .flip-inner {
+      transition: none;
+    }
+
     .glass,
     .glass-card,
     a.glass:hover,

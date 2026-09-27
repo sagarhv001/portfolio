@@ -1,7 +1,7 @@
 'use client';
 
 import { BloomEffect, EffectComposer, EffectPass, RenderPass, SMAAEffect, SMAAPreset } from 'postprocessing';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
 
 const DEFAULT_EFFECT_OPTIONS = {
@@ -42,9 +42,22 @@ const DEFAULT_EFFECT_OPTIONS = {
   }
 };
 
-const Hyperspeed = ({ effectOptions = DEFAULT_EFFECT_OPTIONS, lightMode = false }) => {
+const Hyperspeed = ({ effectOptions = DEFAULT_EFFECT_OPTIONS }) => {
   const hyperspeed = useRef(null);
   const appRef = useRef(null);
+  const [lightMode, setLightMode] = useState(
+    () => typeof document !== 'undefined' && document.documentElement.dataset.theme === 'day'
+  );
+
+  // follow <html data-theme> (set by layout script + SectionSwitcher toggle); a change rebuilds the scene
+  useEffect(() => {
+    const root = document.documentElement;
+    const sync = () => setLightMode(root.dataset.theme === 'day');
+    sync();
+    const mo = new MutationObserver(sync);
+    mo.observe(root, { attributes: true, attributeFilter: ['data-theme'] });
+    return () => mo.disconnect();
+  }, []);
 
   useEffect(() => {
     if (appRef.current) {
@@ -446,7 +459,8 @@ const Hyperspeed = ({ effectOptions = DEFAULT_EFFECT_OPTIONS, lightMode = false 
         this.bloomPass = new EffectPass(
           this.camera,
           new BloomEffect({
-            luminanceThreshold: 0.12,
+            // day: a light road outshines the car lights, so any threshold that keeps car glow also glares the road — bloom off
+            luminanceThreshold: this.options.lightMode ? 1 : 0.12,
             luminanceSmoothing: 0.08,
             mipmapBlur: true,
             intensity: 2.4,
@@ -1186,15 +1200,17 @@ const Hyperspeed = ({ effectOptions = DEFAULT_EFFECT_OPTIONS, lightMode = false 
         ...effectOptions.colors,
         ...(lightMode
           ? {
-              roadColor: 0xffffff,
-              islandColor: 0xf8f7fa,
-              background: 0xffffff,
+              // match --bg day (196 196 192) so the road melts into the page
+              roadColor: 0xc4c4c0,
+              islandColor: 0xcbcbc7,
+              background: 0xc4c4c0,
               shoulderLines: 0x7c3aed,
               brokenLines: 0xc084fc
             }
           : {})
       }
     };
+    options.lightMode = lightMode;
     options.distortion = distortions[options.distortion];
 
     const myApp = new App(container, options);
